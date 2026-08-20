@@ -172,10 +172,7 @@
     max-width: 480px;
     margin: 0 auto;
     overflow: hidden;
-    clip-path: inset(0 0 100% 0);
-    transition: clip-path 3.8s cubic-bezier(.65, 0, .35, 1);
   }
-  .inner-window.revealed { clip-path: inset(0 0 0% 0); }
   .inner-content {
     position: relative;
     width: 100%;
@@ -263,16 +260,16 @@
     font-family: 'GyeonggiBatang', serif;
   }
   .intro-line1 {
-    font-size: 40px;
+    font-size: 48px;
     letter-spacing: 0.08em;
-    color: #9a9184;
+    color: #4a4238;
     margin-bottom: 30px;
     white-space: nowrap;
   }
   .intro-line2 {
-    font-size: 55px;
+    font-size: 68px;
     letter-spacing: 0.04em;
-    color: #4a4640;
+    color: #201d18;
     white-space: nowrap;
   }
   .intro-cursor {
@@ -1056,24 +1053,6 @@
   </div>
 
 <script>
-  /* ---- 속지가 화면에 들어오면 위→아래로 서서히 내려오는 효과 재생 ---- */
-  (function () {
-    const innerWindow = document.getElementById('innerWindow');
-    let started = false;
-
-    const innerWrap = document.getElementById('innerWrap');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !started) {
-          started = true;
-          innerWindow.classList.add('revealed');
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.15 });
-    observer.observe(innerWrap);
-  })();
-
   /* ---- 청첩장 공유하기 (URL 복사) ---- */
   (function () {
     const btn = document.getElementById('shareBtn');
@@ -1200,55 +1179,12 @@
   window.addEventListener('load', fitIntroCanvas);
   fitIntroCanvas();
 
-  /* ---- 인트로 타이핑 효과 ---- */
+  /* ---- 날짜/장소 문구를 처음부터 바로 표시 (타이핑 효과 제거) ---- */
   (function () {
     const line1 = document.getElementById('introLine1');
     const line2 = document.getElementById('introLine2');
-    const text1 = '2026년 10월 17일 토요일 오후 3시';
-    const text2 = '경복궁 국립고궁박물관 옆 은행나무 아래';
-    const typeSpeed = 90;
-    const lineGap = 450;
-
-    const cursor = document.createElement('span');
-    cursor.className = 'intro-cursor';
-
-    function typeInto(el, text, speed, onDone) {
-      let i = 0;
-      el.appendChild(cursor);
-      function step() {
-        if (i < text.length) {
-          el.insertBefore(document.createTextNode(text[i]), cursor);
-          i++;
-          setTimeout(step, speed);
-        } else if (onDone) {
-          onDone();
-        }
-      }
-      step();
-    }
-
-    function startTyping() {
-      typeInto(line1, text1, typeSpeed, () => {
-        setTimeout(() => {
-          typeInto(line2, text2, typeSpeed, () => {
-            setTimeout(() => { cursor.style.opacity = '0'; }, 1400);
-          });
-        }, lineGap);
-      });
-    }
-
-    const introEl = document.getElementById('introCanvas');
-    let started = false;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !started) {
-          started = true;
-          startTyping();
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.4 });
-    observer.observe(introEl);
+    if (line1) line1.textContent = '2026년 10월 17일 토요일 오후 3시';
+    if (line2) line2.textContent = '경복궁 국립고궁박물관 옆 은행나무 아래';
   })();
 
   /* ---- 포토 갤러리: 더보기 / 접기 ---- */
